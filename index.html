@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f4f7f6">
-  <title>PlasTrack | Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f7f6">
+  <meta
+    name="description"
+    content="Dashboard de monitoreo satelital de Galápagos con datos de nubosidad y aptitud."
+  >
+  <title>PlasTrack | Monitoreo Satelital Galápagos</title>
   <link rel="stylesheet" href="style/style.css">
   <link
     rel="stylesheet"
@@ -19,62 +23,97 @@
     crossorigin=""
     defer
   ></script>
+  <script src="js/app.js" defer></script>
 </head>
 <body>
   <main class="dashboard">
     <header class="dashboard-header">
-      <div>
-        <p class="eyebrow">Monitoreo ambiental</p>
-        <h1>PlasTrack</h1>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <div>
+          <p class="eyebrow">Observación ambiental</p>
+          <h1>PlasTrack</h1>
+        </div>
       </div>
-      <p class="header-note">Resumen de actividad</p>
+      <div class="header-info">
+        <p class="header-title">Monitoreo Satelital Galápagos</p>
+        <p class="header-subtitle">Panel de seguimiento de pasadas satelitales</p>
+      </div>
     </header>
+
+    <p id="dashboard-status" class="dashboard-status" role="status" aria-live="polite">
+      Cargando datos satelitales…
+    </p>
 
     <section class="kpi-grid" aria-label="Indicadores clave">
       <article class="kpi-card">
-        <p class="kpi-label">Plástico recolectado</p>
-        <p class="kpi-value">1.284 <span>kg</span></p>
-        <p class="kpi-footnote">Total registrado</p>
+        <div class="kpi-topline">
+          <p class="kpi-label">Total de pasadas</p>
+          <span class="kpi-icon kpi-icon-blue" aria-hidden="true">↗</span>
+        </div>
+        <p class="kpi-value" id="total-passes">—</p>
+        <p class="kpi-footnote">Registros satelitales analizados</p>
       </article>
       <article class="kpi-card">
-        <p class="kpi-label">Puntos de monitoreo</p>
-        <p class="kpi-value">24</p>
-        <p class="kpi-footnote">Sitios activos</p>
+        <div class="kpi-topline">
+          <p class="kpi-label">Promedio de nubosidad</p>
+          <span class="kpi-icon kpi-icon-green" aria-hidden="true">☁</span>
+        </div>
+        <p class="kpi-value"><span id="average-cloud-cover">—</span><span class="kpi-unit">%</span></p>
+        <p class="kpi-footnote">Media de cobertura registrada</p>
       </article>
       <article class="kpi-card">
-        <p class="kpi-label">Jornadas completadas</p>
-        <p class="kpi-value">38</p>
-        <p class="kpi-footnote">Este mes</p>
+        <div class="kpi-topline">
+          <p class="kpi-label">Alertas críticas</p>
+          <span class="kpi-icon kpi-icon-amber" aria-hidden="true">!</span>
+        </div>
+        <p class="kpi-value" id="critical-alerts">—</p>
+        <p class="kpi-footnote">Registros críticos o en alerta</p>
       </article>
     </section>
 
-    <section class="content-grid" aria-label="Datos de monitoreo">
+    <section class="content-grid" aria-label="Visualizaciones de datos satelitales">
       <article class="panel map-panel">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">Ubicaciones</p>
-            <h2>Mapa de monitoreo</h2>
+            <p class="eyebrow">Distribución geográfica</p>
+            <h2>Mapa de pasadas</h2>
           </div>
+          <span class="panel-badge">Islas Galápagos</span>
         </div>
-        <div id="map" class="map-container" role="region" aria-label="Mapa de puntos de monitoreo">
-          <p>El mapa se mostrará aquí.</p>
+        <div id="map" class="map-container" role="region" aria-label="Mapa interactivo de pasadas satelitales">
+          <p class="map-placeholder">Cargando mapa…</p>
+        </div>
+        <div class="map-legend" aria-label="Leyenda de alertas">
+          <span><i class="legend-dot legend-normal"></i>Normal</span>
+          <span><i class="legend-dot legend-warning"></i>Precaución / alerta</span>
+          <span><i class="legend-dot legend-critical"></i>Crítico</span>
         </div>
       </article>
 
       <article class="panel chart-panel">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">Tendencia</p>
-            <h2>Recolección de plástico</h2>
+            <p class="eyebrow">Evolución temporal</p>
+            <h2>Nubosidad por pasada</h2>
           </div>
+          <span class="panel-badge">Porcentaje</span>
         </div>
         <div class="chart-container">
-          <canvas id="collection-chart" role="img" aria-label="Gráfico de recolección de plástico">
-            Gráfico de recolección de plástico.
-          </canvas>
+          <canvas
+            id="cloud-cover-chart"
+            role="img"
+            aria-label="Gráfico de nubosidad por fecha; la aptitud se muestra al pasar sobre cada punto"
+          >Gráfico de nubosidad por fecha.</canvas>
         </div>
+        <p class="chart-hint">Pasa sobre los puntos para consultar la aptitud del sensor.</p>
       </article>
     </section>
+
+    <footer class="dashboard-footer">
+      <span>PlasTrack · Monitoreo ambiental</span>
+      <span>Datos procesados localmente en tu navegador</span>
+    </footer>
   </main>
 </body>
 </html>

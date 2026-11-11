@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "fecha": "2026-10-01",
+    "latitud": 0.0891,
+    "longitud": -91.2785,
+    "nubosidad": 44,
+    "aptitud": "Marginal",
+    "kpi_acumulacion": "Normal"
+  },
+  {
+    "id": 2,
+    "fecha": "2026-10-02",
+    "latitud": -0.3399,
+    "longitud": -90.7221,
+    "nubosidad": 50,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Crítico"
+  },
+  {
+    "id": 3,
+    "fecha": "2026-10-03",
+    "latitud": -0.7145,
+    "longitud": -90.7583,
+    "nubosidad": 0,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Alerta"
+  },
+  {
+    "id": 4,
+    "fecha": "2026-10-04",
+    "latitud": -0.0405,
+    "longitud": -89.7598,
+    "nubosidad": 91,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Crítico"
+  },
+  {
+    "id": 5,
+    "fecha": "2026-10-05",
+    "latitud": -0.3904,
+    "longitud": -89.6426,
+    "nubosidad": 25,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Precaución"
+  },
+  {
+    "id": 6,
+    "fecha": "2026-10-06",
+    "latitud": -0.2501,
+    "longitud": -90.8335,
+    "nubosidad": 51,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Crítico"
+  },
+  {
+    "id": 7,
+    "fecha": "2026-10-07",
+    "latitud": -1.0135,
+    "longitud": -90.905,
+    "nubosidad": 70,
+    "aptitud": "Óptima",
+    "kpi_acumulacion": "Alerta"
+  },
+  {
+    "id": 8,
+    "fecha": "2026-10-08",
+    "latitud": -0.454,
+    "longitud": -90.9092,
+    "nubosidad": 40,
+    "aptitud": "Pobre",
+    "kpi_acumulacion": "Alerta"
+  },
+  {
+    "id": 9,
+    "fecha": "2026-10-09",
+    "latitud": -0.0946,
+    "longitud": -89.6414,
+    "nubosidad": 73,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Crítico"
+  },
+  {
+    "id": 10,
+    "fecha": "2026-10-10",
+    "latitud": -0.6331,
+    "longitud": -89.5183,
+    "nubosidad": 80,
+    "aptitud": "Óptima",
+    "kpi_acumulacion": "Normal"
+  },
+  {
+    "id": 11,
+    "fecha": "2026-10-11",
+    "latitud": -0.1772,
+    "longitud": -89.7544,
+    "nubosidad": 97,
+    "aptitud": "Óptima",
+    "kpi_acumulacion": "Normal"
+  },
+  {
+    "id": 12,
+    "fecha": "2026-10-12",
+    "latitud": -0.5671,
+    "longitud": -91.3536,
+    "nubosidad": 76,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Crítico"
+  },
+  {
+    "id": 13,
+    "fecha": "2026-10-13",
+    "latitud": -0.639,
+    "longitud": -89.9978,
+    "nubosidad": 28,
+    "aptitud": "Aceptable",
+    "kpi_acumulacion": "Normal"
+  },
+  {
+    "id": 14,
+    "fecha": "2026-10-14",
+    "latitud": -0.2647,
+    "longitud": -91.0221,
+    "nubosidad": 11,
+    "aptitud": "Óptima",
+    "kpi_acumulacion": "Precaución"
+  },
+  {
+    "id": 15,
+    "fecha": "2026-10-15",
+    "latitud": -0.5598,
+    "longitud": -91.3489,
+    "nubosidad": 34,
+    "aptitud": "Marginal",
+    "kpi_acumulacion": "Alerta"
+  }
+]
