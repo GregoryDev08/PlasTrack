@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f7f6">
+  <title>PlasTrack | Dashboard</title>
+  <link rel="stylesheet" href="style/style.css">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    defer
+  ></script>
+</head>
+<body>
+  <main class="dashboard">
+    <header class="dashboard-header">
+      <div>
+        <p class="eyebrow">Monitoreo ambiental</p>
+        <h1>PlasTrack</h1>
+      </div>
+      <p class="header-note">Resumen de actividad</p>
+    </header>
+
+    <section class="kpi-grid" aria-label="Indicadores clave">
+      <article class="kpi-card">
+        <p class="kpi-label">Plástico recolectado</p>
+        <p class="kpi-value">1.284 <span>kg</span></p>
+        <p class="kpi-footnote">Total registrado</p>
+      </article>
+      <article class="kpi-card">
+        <p class="kpi-label">Puntos de monitoreo</p>
+        <p class="kpi-value">24</p>
+        <p class="kpi-footnote">Sitios activos</p>
+      </article>
+      <article class="kpi-card">
+        <p class="kpi-label">Jornadas completadas</p>
+        <p class="kpi-value">38</p>
+        <p class="kpi-footnote">Este mes</p>
+      </article>
+    </section>
+
+    <section class="content-grid" aria-label="Datos de monitoreo">
+      <article class="panel map-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Ubicaciones</p>
+            <h2>Mapa de monitoreo</h2>
+          </div>
+        </div>
+        <div id="map" class="map-container" role="region" aria-label="Mapa de puntos de monitoreo">
+          <p>El mapa se mostrará aquí.</p>
+        </div>
+      </article>
+
+      <article class="panel chart-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Tendencia</p>
+            <h2>Recolección de plástico</h2>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="collection-chart" role="img" aria-label="Gráfico de recolección de plástico">
+            Gráfico de recolección de plástico.
+          </canvas>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
