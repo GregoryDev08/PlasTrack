@@ -72,6 +72,17 @@
       </article>
     </section>
 
+    <nav class="filter-toolbar" aria-label="Filtrar pasadas por KPI de acumulación">
+      <span class="filter-label">Filtrar por estado</span>
+      <div class="filter-buttons" role="group" aria-label="Estado del KPI de acumulación">
+        <button class="filter-button is-active" type="button" data-kpi="todos" aria-pressed="true">Todos</button>
+        <button class="filter-button" type="button" data-kpi="critico" aria-pressed="false">Crítico</button>
+        <button class="filter-button" type="button" data-kpi="alerta" aria-pressed="false">Alerta</button>
+        <button class="filter-button" type="button" data-kpi="precaucion" aria-pressed="false">Precaución</button>
+        <button class="filter-button" type="button" data-kpi="normal" aria-pressed="false">Normal</button>
+      </div>
+    </nav>
+
     <section class="content-grid" aria-label="Visualizaciones de datos satelitales">
       <article class="panel map-panel">
         <div class="panel-heading">
@@ -103,10 +114,10 @@
           <canvas
             id="cloud-cover-chart"
             role="img"
-            aria-label="Gráfico de nubosidad por fecha; la aptitud se muestra al pasar sobre cada punto"
+            aria-label="Gráfico de nubosidad por fecha con aptitud y KPI; selecciona un punto para localizarlo en el mapa"
           >Gráfico de nubosidad por fecha.</canvas>
         </div>
-        <p class="chart-hint">Pasa sobre los puntos para consultar la aptitud del sensor.</p>
+        <p class="chart-hint">Selecciona un punto para ver la aptitud y centrar esa pasada en el mapa.</p>
       </article>
     </section>
 

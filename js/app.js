@@ -9,6 +9,7 @@ const elements = {
   criticalAlerts: document.getElementById("critical-alerts"),
   map: document.getElementById("map"),
   chart: document.getElementById("cloud-cover-chart"),
+  filterButtons: [...document.querySelectorAll(".filter-button")],
 };
 
 const aptitudeColors = {
@@ -17,6 +18,21 @@ const aptitudeColors = {
   "Marginal": "#d99a36",
   "Pobre": "#c85a4b",
 };
+
+let allRecords = [];
+let filteredRecords = [];
+let map;
+let markerLayer;
+let currentMarkers = [];
+let chart;
+
+function normalizeStatus(status) {
+  return status
+    .trim()
+    .toLocaleLowerCase("es")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
 
 function showStatus(message, state = "info") {
   elements.status.textContent = message;
@@ -78,23 +94,23 @@ function updateKpis(records) {
   const averageCloudCover = records.reduce(
     (total, record) => total + record.nubosidad,
     0,
-  ) / records.length;
+  ) / (records.length || 1);
   const criticalAlerts = records.filter((record) => {
-    const status = record.kpi_acumulacion.trim().toLocaleLowerCase("es");
-    return status === "crítico" || status === "alerta";
+    const status = normalizeStatus(record.kpi_acumulacion);
+    return status === "critico" || status === "alerta";
   }).length;
 
   elements.totalPasses.textContent = new Intl.NumberFormat("es-ES").format(records.length);
-  elements.averageCloudCover.textContent = new Intl.NumberFormat("es-ES", {
-    maximumFractionDigits: 1,
-  }).format(averageCloudCover);
+  elements.averageCloudCover.textContent = records.length
+    ? new Intl.NumberFormat("es-ES", { maximumFractionDigits: 1 }).format(averageCloudCover)
+    : "—";
   elements.criticalAlerts.textContent = new Intl.NumberFormat("es-ES").format(criticalAlerts);
 }
 
 function getMarkerColor(status) {
-  const normalizedStatus = status.trim().toLocaleLowerCase("es");
-  if (normalizedStatus === "crítico") return "#d65b4c";
-  if (normalizedStatus === "alerta" || normalizedStatus === "precaución") return "#e7a33b";
+  const normalizedStatus = normalizeStatus(status);
+  if (normalizedStatus === "critico") return "#d65b4c";
+  if (normalizedStatus === "alerta" || normalizedStatus === "precaucion") return "#e7a33b";
   return "#26856c";
 }
 
@@ -103,37 +119,31 @@ function createPopupContent(record) {
   const title = document.createElement("div");
   const date = document.createElement("div");
   const cloudCover = document.createElement("div");
-  const status = document.createElement("div");
+  const aptitude = document.createElement("div");
+  const statusRow = document.createElement("div");
+  const statusIndicator = document.createElement("span");
+  const status = document.createElement("span");
 
   title.className = "popup-title";
   title.textContent = `Pasada #${record.id ?? "—"}`;
   date.textContent = `Fecha: ${record.fecha}`;
   cloudCover.textContent = `Nubosidad: ${record.nubosidad}%`;
   status.className = "popup-status";
-  status.style.color = getMarkerColor(record.kpi_acumulacion);
-  status.textContent = `KPI de acumulación: ${record.kpi_acumulacion}`;
+  aptitude.textContent = `Aptitud del sensor: ${record.aptitud}`;
+  statusRow.className = "popup-status-row";
+  statusIndicator.className = "popup-status-indicator";
+  statusIndicator.style.backgroundColor = getMarkerColor(record.kpi_acumulacion);
+  status.textContent = record.kpi_acumulacion;
 
-  content.append(title, date, cloudCover, status);
+  statusRow.append(statusIndicator, status);
+  content.append(title, date, cloudCover, aptitude, statusRow);
   return content;
 }
 
-function initializeMap(records) {
-  if (typeof L === "undefined") {
-    throw new Error("Leaflet no está disponible. Comprueba la conexión al CDN.");
-  }
-
-  elements.map.replaceChildren();
-  const map = L.map(elements.map, {
-    scrollWheelZoom: false,
-  }).setView(GALAPAGOS_CENTER, MAP_ZOOM);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
-
-  records.forEach((record) => {
-    L.circleMarker([record.latitud, record.longitud], {
+function updateMarkers(records) {
+  markerLayer.clearLayers();
+  currentMarkers = records.map((record) => {
+    const marker = L.circleMarker([record.latitud, record.longitud], {
       radius: 7,
       color: "#ffffff",
       weight: 2,
@@ -141,13 +151,41 @@ function initializeMap(records) {
       fillOpacity: 0.95,
     })
       .bindPopup(createPopupContent(record))
-      .addTo(map);
-  });
+      .addTo(markerLayer);
 
-  return map;
+    return marker;
+  });
 }
 
-function initializeChart(records) {
+function initializeMap() {
+  if (typeof L === "undefined") {
+    throw new Error("Leaflet no está disponible. Comprueba la conexión al CDN.");
+  }
+
+  elements.map.replaceChildren();
+  map = L.map(elements.map, {
+    scrollWheelZoom: false,
+  }).setView(GALAPAGOS_CENTER, MAP_ZOOM);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+  markerLayer = L.layerGroup().addTo(map);
+  updateMarkers(filteredRecords);
+}
+
+function updateChart(records) {
+  chart.data.labels = records.map((record) => record.fecha);
+  chart.data.datasets[0].data = records.map((record) => record.nubosidad);
+  chart.data.datasets[0].records = records;
+  chart.data.datasets[0].pointBackgroundColor = records.map(
+    (record) => aptitudeColors[record.aptitud] ?? "#66827c",
+  );
+  chart.update();
+}
+
+function initializeChart() {
   if (typeof Chart === "undefined") {
     throw new Error("Chart.js no está disponible. Comprueba la conexión al CDN.");
   }
@@ -157,22 +195,21 @@ function initializeChart(records) {
   gradient.addColorStop(0, "rgb(36 132 112 / 24%)");
   gradient.addColorStop(1, "rgb(36 132 112 / 0%)");
 
-  return new Chart(context, {
+  chart = new Chart(context, {
     type: "line",
     data: {
-      labels: records.map((record) => record.fecha),
+      labels: [],
       datasets: [{
         label: "Nubosidad",
-        data: records.map((record) => record.nubosidad),
-        aptitude: records.map((record) => record.aptitud),
+        data: [],
+        records: [],
         borderColor: "#248470",
         backgroundColor: gradient,
-        pointBackgroundColor: records.map(
-          (record) => aptitudeColors[record.aptitud] ?? "#66827c",
-        ),
+        pointBackgroundColor: [],
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
         pointRadius: 4,
+        pointHitRadius: 10,
         pointHoverRadius: 6,
         fill: true,
         tension: 0.32,
@@ -195,7 +232,11 @@ function initializeChart(records) {
               return `Nubosidad: ${context.parsed.y}%`;
             },
             afterLabel(context) {
-              return `Aptitud del sensor: ${context.dataset.aptitude[context.dataIndex]}`;
+              const record = context.dataset.records[context.dataIndex];
+              return [
+                `Aptitud: ${record.aptitud}`,
+                `KPI de acumulación: ${record.kpi_acumulacion}`,
+              ];
             },
           },
         },
@@ -242,16 +283,63 @@ function initializeChart(records) {
           },
         },
       },
+      onClick(event, _activeElements, chartInstance) {
+        const clickedPoints = chartInstance.getElementsAtEventForMode(
+          event,
+          "nearest",
+          { intersect: true },
+          false,
+        );
+        if (clickedPoints.length === 0) return;
+
+        const index = clickedPoints[0].index;
+        const record = filteredRecords[index];
+        const marker = currentMarkers[index];
+        if (!record || !marker || !map) return;
+
+        map.flyTo([record.latitud, record.longitud], Math.max(map.getZoom(), 11), {
+          animate: true,
+          duration: 1.2,
+        });
+        marker.openPopup();
+      },
     },
+  });
+
+  updateChart(filteredRecords);
+  return chart;
+}
+
+function applyFilter(status) {
+  filteredRecords = status === "todos"
+    ? [...allRecords]
+    : allRecords.filter((record) => normalizeStatus(record.kpi_acumulacion) === status);
+
+  elements.filterButtons.forEach((button) => {
+    const isActive = button.dataset.kpi === status;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  updateKpis(filteredRecords);
+  updateMarkers(filteredRecords);
+  updateChart(filteredRecords);
+}
+
+function initializeFilters() {
+  elements.filterButtons.forEach((button) => {
+    button.addEventListener("click", () => applyFilter(button.dataset.kpi));
   });
 }
 
 async function initializeDashboard() {
   try {
-    const records = await loadRecords();
-    updateKpis(records);
-    initializeMap(records);
-    initializeChart(records);
+    allRecords = await loadRecords();
+    filteredRecords = [...allRecords];
+    initializeFilters();
+    initializeMap();
+    initializeChart();
+    updateKpis(filteredRecords);
     clearStatus();
   } catch (error) {
     showStatus(
